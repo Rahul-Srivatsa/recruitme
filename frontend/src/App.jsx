@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import AudioRecorder from './Recording';  // Assuming you named the file 'Recording.jsx'
+import { useState } from 'react';
+import AudioRecorder from './Recording';
+import ExtractResume from './ExtractResume';  // Assuming you named the file 'Recording.jsx'
 
 const App = () => {
     const [transcription, setTranscription] = useState(""); // State to store the transcript
@@ -9,6 +10,7 @@ const App = () => {
     };
 
     return (
+        <>
         <div className="App">
             <header className="App-header">
                 <h1>Real-Time Audio Transcription</h1>
@@ -18,6 +20,10 @@ const App = () => {
                 <p>{transcription}</p>  {/* Display the transcription */}
             </header>
         </div>
+        <div>
+            <ExtractResume />
+        </div>
+        </>
     );
 };
 
