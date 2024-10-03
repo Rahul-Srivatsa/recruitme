@@ -8,11 +8,23 @@ const multer = require('multer'); // For handling file uploads
 
 const router = express.Router();
 
-// Initialize Google Generative AI
-const genai = new GoogleGenerativeAI({
-  apiKey: process.env.GEMINI_API_KEY, // Your Gemini API Key from environment variables
+const { GoogleAuth } = require('google-auth-library');
+
+// Create a new GoogleAuth instance
+const auth = new GoogleAuth({
+  scopes: ['https://www.googleapis.com/auth/generative-language'],
 });
 
+async function getAccessToken() {
+  const client = await auth.getClient();
+  const token = await client.getAccessToken();
+  return token;
+}
+
+// Initialize Google Generative AI
+const genAI = new GoogleGenerativeAI({
+  apiKey: process.env.GEMINI_API_KEY, // Your Gemini API Key from environment variables
+});
 // Multer setup to handle file uploads
 const upload = multer({ dest: 'uploads/' });
 
@@ -49,12 +61,17 @@ router.post('/ask-gemini', async (req, res) => {
     Resume: "${resume}"
     Job Description: "${jobDescription}"`;
 
-    const response = await genai.generateContent({
-      model: 'gemini-1.5-flash-001',
-      prompt: prompt,
-    });
+    console.log('Prompt:', prompt);
 
-    res.status(200).json({ question: response }); // Send the response back
+    // Initialize the model
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    // Pass the prompt as part of an object to generate content
+    const response = await model.generateContent(prompt);
+
+    // Log and send the generated content
+    console.log(response.response.text());
+    res.status(200).json({ question: response.response.text() }); // Send the response back
   } catch (error) {
     console.error('Error querying Gemini:', error);
     res.status(500).json({ message: 'Error communicating with Gemini API' });
