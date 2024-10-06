@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const geminiRoutes = require('./routes/Gemini');
+const { startSpeechToTextServer } = require('./SpeechToText');
 
 // Middleware to parse JSON bodies
 const cors = require('cors');

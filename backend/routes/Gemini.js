@@ -40,7 +40,8 @@ router.post('/ask-gemini', async (req, res) => {
     const prompt = `Based on the following transcription, resume, and job description, generate a follow-up question to assess the candidate's fit:
     Transcription: "${transcription}"
     Resume: "${resume}"
-    Job Description: "${jobDescription}"`;
+    Job Description: "${jobDescription}"
+    not more than 50 words.`;
 
     // console.log('Prompt:', prompt);
 
