@@ -1,30 +1,11 @@
 const express = require('express');
 const fs = require('fs');
-const path = require('path');
 const pdfParse = require('pdf-parse');
 require('dotenv').config();
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const multer = require('multer'); // For handling file uploads
 
 const router = express.Router();
-
-const { GoogleAuth } = require('google-auth-library');
-
-// Create a new GoogleAuth instance
-const auth = new GoogleAuth({
-  scopes: ['https://www.googleapis.com/auth/generative-language'],
-});
-
-async function getAccessToken() {
-  const client = await auth.getClient();
-  const token = await client.getAccessToken();
-  return token;
-}
-
-// Initialize Google Generative AI
-const genAI = new GoogleGenerativeAI({
-  apiKey: process.env.GEMINI_API_KEY, // Your Gemini API Key from environment variables
-});
 // Multer setup to handle file uploads
 const upload = multer({ dest: 'uploads/' });
 
@@ -50,9 +31,9 @@ router.post('/extract-resume', upload.single('resume'), async (req, res) => {
   }
 });
 
-// POST route to interact with Gemini API
 router.post('/ask-gemini', async (req, res) => {
   const { transcription, resume, jobDescription } = req.body;
+  console.log('Transcription:', transcription);
 
   try {
     // Set up the prompt for the API call to Gemini
@@ -61,9 +42,14 @@ router.post('/ask-gemini', async (req, res) => {
     Resume: "${resume}"
     Job Description: "${jobDescription}"`;
 
-    console.log('Prompt:', prompt);
+    // console.log('Prompt:', prompt);
 
-    // Initialize the model
+    // Log the API key to ensure it's being accessed correctly
+    const apiKey = process.env.GEMINI_API_KEY;
+
+    // Initialize the model with the API key
+    const genAI = new GoogleGenerativeAI(apiKey);
+
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     // Pass the prompt as part of an object to generate content
