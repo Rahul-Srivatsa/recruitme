@@ -11,8 +11,8 @@ def SpeakText(command):
     engine = pyttsx3.init()
     engine.say(command) 
     engine.runAndWait()
-    
-# Function to call the Gemini API and fetch a question
+
+# Function to call the Gemini API and fetch a follow-up question
 def fetch_gemini_response(transcription):
     # Define your Gemini API endpoint
     url = "http://localhost:3000/api/ask-gemini"  # Replace with your actual endpoint
@@ -47,19 +47,18 @@ while True:
             MyText = MyText.lower()
 
             print("Did you say: ", MyText)
-            SpeakText(MyText)
-            
-            # Check if the user said "stop"
-            if "stop" in MyText:
-                print("Stopping the listener.")
-                break  # Exit the loop and stop listening
             
             # Fetch question from Gemini API
             gemini_response = fetch_gemini_response(MyText)
             if gemini_response and "question" in gemini_response:  # Adjust based on your API's response structure
                 question = gemini_response["question"]  # Get the question text
                 print("Gemini API response:", question)
-                SpeakText(question)  # Convert the response to speech
+                SpeakText(question)  # Read out the follow-up question
+                
+            # Check if the user said "stop"
+            if "stop" in MyText:
+                print("Stopping the listener.")
+                break  # Exit the loop and stop listening
             
     except sr.RequestError as e:
         print("Could not request results; {0}".format(e))

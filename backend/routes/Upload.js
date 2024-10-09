@@ -44,7 +44,6 @@ router.post('/resume', upload.single('resume'), async (req, res) => {
     // Clean up: remove the temporary image and the PDF file
     fs.unlinkSync(resumePath);
     fs.unlinkSync(firstImage);
-    console.log(ocrResult.data.text);
     return res.status(200).json({ resume: ocrResult.data.text, jobDescription });
   } catch (error) {
     console.error('Error processing resume:', error);
