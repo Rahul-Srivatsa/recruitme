@@ -1,7 +1,7 @@
 .venv
 .env
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
+speech_to_text.log
 nodemon.json
 # dependencies
 /node_modules

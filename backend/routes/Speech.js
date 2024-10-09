@@ -28,15 +28,22 @@ router.post('/transcribe', (req, res) => {
 
   // Execute the Python script
   exec(pythonScript, (error, stdout, stderr) => {
+    // Log the output and error streams
+    if (stdout) {
+      fs.appendFileSync('speech_to_text.log', `STDOUT: ${stdout}\n`);
+    }
+    if (stderr) {
+      fs.appendFileSync('speech_to_text.log', `STDERR: ${stderr}\n`);
+    }
+
     // Clean up the temp audio file
     fs.unlinkSync(tempAudioPath);
 
     if (error) {
-      console.error('Error transcribing audio:', stderr);
+      fs.appendFileSync('speech_to_text.log', `ERROR: ${error.message}\n`);
       return res.status(500).json({ error: 'Transcription failed' });
     }
 
-    // Return the transcription result
     res.status(200).json({ transcription: stdout.trim() });
   });
 });

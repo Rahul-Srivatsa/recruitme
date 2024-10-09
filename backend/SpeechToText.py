@@ -1,9 +1,14 @@
 import speech_recognition as sr
 import pyttsx3
 import requests
+import logging
 
 # Initialize the recognizer 
 r = sr.Recognizer() 
+
+# Set up logging
+logging.basicConfig(filename='speech_to_text.log', level=logging.DEBUG, 
+                    format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Function to convert text to speech
 def SpeakText(command):
@@ -15,7 +20,7 @@ def SpeakText(command):
 # Function to call the Gemini API and fetch a follow-up question
 def fetch_gemini_response(transcription):
     # Define your Gemini API endpoint
-    url = "http://localhost:3000/api/ask-gemini"  # Replace with your actual endpoint
+    url = "http://localhost:3000/api/gemini"  # Replace with your actual endpoint
     payload = {
         "input": transcription  # Adjust according to your API's required input
     }
@@ -26,7 +31,7 @@ def fetch_gemini_response(transcription):
         response.raise_for_status()  # Raise an error for bad responses
         return response.json()  # Return the JSON response
     except requests.exceptions.RequestException as e:
-        print("API request failed:", e)
+        logging.error("API request failed: %s", e)
         return None
 
 # Loop infinitely for user to speak
@@ -39,29 +44,29 @@ while True:
             r.adjust_for_ambient_noise(source, duration=0.1)
             
             # Listens for the user's input 
-            print("Listening...")
+            logging.info("Listening...")
             audio = r.listen(source)
             
             # Using Google to recognize audio
             MyText = r.recognize_google(audio)
             MyText = MyText.lower()
 
-            print("Did you say: ", MyText)
+            logging.info("Recognized text: %s", MyText)
             
             # Fetch question from Gemini API
             gemini_response = fetch_gemini_response(MyText)
             if gemini_response and "question" in gemini_response:  # Adjust based on your API's response structure
                 question = gemini_response["question"]  # Get the question text
-                print("Gemini API response:", question)
+                logging.info("Gemini API response: %s", question)
                 SpeakText(question)  # Read out the follow-up question
                 
             # Check if the user said "stop"
             if "stop" in MyText:
-                print("Stopping the listener.")
+                logging.info("Stopping listener.")
                 break  # Exit the loop and stop listening
             
     except sr.RequestError as e:
-        print("Could not request results; {0}".format(e))
+        logging.error("Error with speech recognition service: %s", e)
         
     except sr.UnknownValueError:
-        print("Unknown error occurred")
+        logging.error("Speech recognition could not understand audio")
