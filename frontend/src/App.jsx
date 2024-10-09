@@ -1,26 +1,19 @@
-// import { useState } from 'react';
-import TestRecord from './TestRecord';  // Assuming you named the file 'Recording.jsx'
-import ExtractResume from './ExtractResume';  // Assuming you named the file 'Recording.jsx'
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import FileUpload from './components/FileUpload';
+import TranscriptHandler from './components/TranscriptHandler';
 
 const App = () => {
-    // const [transcription, setTranscription] = useState(""); // State to store the transcript
+  const [resumeData, setResumeData] = useState(null);
 
-    // const handleTranscriptionUpdate = (newTranscription) => {
-    //     setTranscription(prev => prev + " " + newTranscription); // Append new transcription chunks
-    // };
-
-    return (
-        <>
-        <div className="App">
-            <header className="App-header">
-                <TestRecord/>
-            </header>
-        </div>
-        <div>
-            <ExtractResume />
-        </div>
-        </>
-    );
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<FileUpload setResumeData={setResumeData} />} />
+        <Route path="/transcription" element={<TranscriptHandler resumeData={resumeData} />} />
+      </Routes>
+    </Router>
+  );
 };
 
 export default App;

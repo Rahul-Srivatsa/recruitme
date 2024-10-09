@@ -1,7 +1,8 @@
 const express = require('express');
 const app = express();
 const geminiRoutes = require('./routes/Gemini');
-const { startSpeechToTextServer } = require('./SpeechToText');
+const UploadRoutes = require('./routes/Upload');
+const SpeechRoutes = require('./routes/Speech');
 
 // Middleware to parse JSON bodies
 const cors = require('cors');
@@ -11,6 +12,8 @@ app.use(express.json());
 
 // Use the gemini routes
 app.use('/api', geminiRoutes);
+app.use('/api', UploadRoutes);
+app.use('/api', SpeechRoutes);
 
 // Start the server
 const PORT = process.env.PORT || 5000;
