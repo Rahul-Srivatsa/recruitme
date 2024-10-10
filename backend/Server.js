@@ -1,12 +1,15 @@
 const express = require('express');
 const cors = require('cors');
+const bodyParser = require('body-parser');
+const app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 // Import your route modules
 const geminiRoutes = require('./routes/Gemini');
 const uploadRoutes = require('./routes/Upload');
 const speechRoutes = require('./routes/Speech');
 
-const app = express();
 
 // Middleware to parse JSON and handle CORS
 app.use(cors());

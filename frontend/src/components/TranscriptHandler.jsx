@@ -77,7 +77,7 @@ const TranscriptHandler = ({ resumeData }) => {
   // Function to call the /transcribe endpoint
   const transcribeAudio = async (audioData) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/transcribe', {
+      const res = await axios.post('http://localhost:5000/api/speech/transcribe', {
         audioChunk: audioData,  // Send audio data here
       });
       console.log("Transcription called");
