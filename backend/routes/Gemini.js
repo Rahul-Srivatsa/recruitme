@@ -4,6 +4,11 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const router = express.Router();
 
+router.get('/', (req, res) => {
+  res.status(200).json({ message: 'welcome' });
+})
+
+
 router.post('/gemini', async (req, res) => {
   const { transcription, resume, jobDescription } = req.body;
   console.log('Transcription:', transcription);

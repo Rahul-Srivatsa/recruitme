@@ -10,6 +10,10 @@ const geminiRoutes = require('./routes/Gemini');
 const uploadRoutes = require('./routes/Upload');
 const speechRoutes = require('./routes/Speech');
 
+const corsOptions = cors({
+  origin: 'http://localhost:3000',
+  optionsSuccessStatus: 200,
+});
 
 // Middleware to parse JSON and handle CORS
 app.use(cors());
@@ -20,6 +24,8 @@ app.use(express.json());
 app.use('/api', geminiRoutes);
 app.use('/api', uploadRoutes);
 app.use('/api', speechRoutes);
+
+
 
 // Basic error handling middleware (optional but recommended)
 app.use((err, req, res, next) => {
